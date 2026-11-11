@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PlayStation 5 – Product Landing Page</title>
+<style>
+/* ---------- 1. Theme variables (CSS3 custom properties) ---------- */
+.page {
+  --bg: #f4f6fb;
+  --surface: #ffffff;
+  --text: #0c1226;
+  --muted: #55607a;
+  --accent: #0070d1;
+  --accent-text: #ffffff;
+  --border: #dbe1ee;
+  --shadow: 0 10px 30px rgba(12, 18, 38, .10);
+  --glow: rgba(0, 112, 209, .25);
+  background: var(--bg);
+  color: var(--text);
+  transition: background .4s, color .4s;
+}
+/* Dark mode: the hidden checkbox is :checked, so we override the variables */
+#theme:checked ~ .page {
+  --bg: #070b1a;
+  --surface: #101733;
+  --text: #eef2ff;
+  --muted: #9aa6c7;
+  --accent: #3da0ff;
+  --accent-text: #04122b;
+  --border: #223059;
+  --shadow: 0 10px 30px rgba(0, 0, 0, .5);
+  --glow: rgba(61, 160, 255, .35);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif; line-height: 1.6; }
+.page { min-height: 100vh; }
+.wrap { width: min(1100px, 92%); margin-inline: auto; }
+
+/* Visually hidden but still keyboard-focusable checkbox */
+#theme { position: absolute; opacity: 0; width: 1px; height: 1px; }
+
+/* ---------- 2. Navbar (FLEXBOX) ---------- */
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-block: 18px;
+}
+.logo { font-size: 1.3rem; font-weight: 800; letter-spacing: .5px; }
+.logo span { color: var(--accent); }
+.nav-links { display: flex; align-items: center; gap: 24px; list-style: none; }
+.nav-links a { color: var(--muted); text-decoration: none; transition: color .2s; }
+.nav-links a:hover { color: var(--accent); }
+
+/* Dark/light switch */
+.switch {
+  display: flex; align-items: center; gap: 10px;
+  cursor: pointer; font-size: .9rem; color: var(--muted);
+}
+.track {
+  width: 46px; height: 24px; border-radius: 24px;
+  background: var(--border); position: relative; transition: background .3s;
+}
+.track::after {
+  content: ""; position: absolute; top: 3px; left: 3px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--surface); box-shadow: 0 1px 4px rgba(0,0,0,.4);
+  transition: transform .3s;
+}
+#theme:checked ~ .page .track { background: var(--accent); }
+#theme:checked ~ .page .track::after { transform: translateX(22px); }
+#theme:focus-visible ~ .page .track { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+/* ---------- 3. Hero (FLEXBOX) ---------- */
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 40px;
+  padding-block: 50px 80px;
+}
+.hero-text { flex: 1 1 360px; }
+.hero h1 { font-size: clamp(2.4rem, 6vw, 4rem); line-height: 1.1; margin-bottom: 18px; }
+.hero p { color: var(--muted); font-size: 1.1rem; max-width: 46ch; margin-bottom: 28px; }
+.btn-row { display: flex; gap: 14px; flex-wrap: wrap; }
+.btn {
+  display: inline-block; padding: 13px 28px; border-radius: 999px;
+  font-weight: 600; text-decoration: none; border: 2px solid var(--accent);
+  transition: transform .2s, box-shadow .2s, background .2s, color .2s;
+}
+.btn.primary { background: var(--accent); color: var(--accent-text); }
+.btn.ghost { color: var(--accent); }
+.btn:hover, .btn:focus-visible {
+  transform: translateY(-3px); box-shadow: 0 8px 20px var(--glow);
+}
+.btn.ghost:hover { background: var(--accent); color: var(--accent-text); }
+
+/* Console drawn with pure CSS (flex: white wing | black core | white wing) */
+.hero-art { flex: 1 1 300px; display: flex; justify-content: center; }
+.console {
+  display: flex; align-items: stretch; gap: 8px;
+  height: 320px; padding: 24px 32px; border-radius: 40px;
+  background: radial-gradient(circle at 50% 100%, var(--glow), transparent 70%);
+  animation: float 5s ease-in-out infinite;   /* the single page motion */
+}
+.wing {
+  width: 92px; border-radius: 46px 46px 30px 30px;
+  background: linear-gradient(90deg, #ffffff, #dfe5f3);
+  box-shadow: var(--shadow);
+}
+.core {
+  width: 46px; border-radius: 12px; position: relative;
+  background: linear-gradient(#10131f, #000);
+}
+.core::after { /* glowing power strip */
+  content: ""; position: absolute; left: 50%; bottom: 18px;
+  width: 6px; height: 60px; border-radius: 4px; transform: translateX(-50%);
+  background: var(--accent); box-shadow: 0 0 14px var(--accent);
+}
+@keyframes float { 50% { transform: translateY(-14px); } }
+
+/* ---------- 4. Section headings ---------- */
+section { padding-block: 60px; }
+.section-head { text-align: center; margin-bottom: 40px; }
+.section-head h2 { font-size: clamp(1.7rem, 4vw, 2.4rem); }
+.section-head p { color: var(--muted); max-width: 55ch; margin: 8px auto 0; }
+
+/* ---------- 5. Features (CSS GRID, auto-fit responsive) ---------- */
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 24px;
+}
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 18px; padding: 28px; box-shadow: var(--shadow);
+  transition: transform .25s, border-color .25s;
+}
+.card:hover { transform: translateY(-6px); border-color: var(--accent); }
+.card h3 { margin-bottom: 8px; }
+.card p { color: var(--muted); font-size: .95rem; }
+.icon {
+  display: grid; place-items: center; width: 48px; height: 48px;
+  border-radius: 14px; margin-bottom: 16px; font-size: 1.4rem;
+  background: var(--glow);
+}
+/* The first card spans two columns on wide screens */
+.features .wide { grid-column: span 2; }
+
+/* ---------- 6. Editions (CSS GRID, 2 columns) ---------- */
+.editions {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;
+}
+.edition {
+  display: flex; flex-direction: column; gap: 10px;
+  background: var(--surface); border: 2px solid var(--border);
+  border-radius: 18px; padding: 32px;
+}
+.edition.featured { border-color: var(--accent); box-shadow: 0 0 0 4px var(--glow); }
+.edition ul { list-style: none; color: var(--muted); flex: 1; }
+.edition li { padding-block: 6px; border-bottom: 1px solid var(--border); }
+
+/* ---------- 7. Specs (CSS GRID, two columns) ---------- */
+.specs {
+  display: grid; grid-template-columns: 1fr 2fr; gap: 0;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 18px; overflow: hidden;
+}
+.specs dt, .specs dd { padding: 16px 22px; border-bottom: 1px solid var(--border); }
+.specs dt { font-weight: 600; background: var(--glow); }
+.specs dd { color: var(--muted); }
+
+/* ---------- 8. Call to action + footer (FLEXBOX) ---------- */
+.cta {
+  display: flex; flex-direction: column; align-items: center; text-align: center; gap: 18px;
+  background: var(--accent); color: var(--accent-text);
+  border-radius: 28px; padding: 56px 24px;
+}
+.cta .btn { background: var(--accent-text); color: var(--accent); border-color: var(--accent-text); }
+footer {
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+  padding-block: 40px; color: var(--muted); font-size: .9rem;
+}
+
+/* ---------- 9. Responsive + accessibility ---------- */
+@media (max-width: 700px) {
+  .features .wide { grid-column: span 1; }
+  .specs { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+  .hero { text-align: center; justify-content: center; }
+  .hero p { margin-inline: auto; }
+  .btn-row { justify-content: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+a:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+</style>
+</head>
+<body>
+
+<!-- Hidden checkbox controls the theme (no JavaScript needed) -->
+<input type="checkbox" id="theme" aria-label="Toggle dark mode">
+
+<div class="page">
+  <div class="wrap">
+
+    <nav>
+      <div class="logo">Play<span>Station</span> 5</div>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#editions">Editions</a></li>
+        <li><a href="#specs">Specs</a></li>
+      </ul>
+      <label class="switch" for="theme">
+        <span class="track"></span> Dark mode
+      </label>
+    </nav>
+
+    <header class="hero">
+      <div class="hero-text">
+        <h1>Play has no limits.</h1>
+        <p>Lightning-fast loading, immersive 3D audio and a controller you can feel. Meet the console built for the next generation of games.</p>
+        <div class="btn-row">
+          <a class="btn primary" href="#editions">Choose your PS5</a>
+          <a class="btn ghost" href="#features">See what's new</a>
+        </div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="console">
+          <div class="wing"></div>
+          <div class="core"></div>
+          <div class="wing"></div>
+        </div>
+      </div>
+    </header>
+
+    <section id="features">
+      <div class="section-head">
+        <h2>Built for how you play</h2>
+        <p>Four upgrades that change how games look, sound and feel.</p>
+      </div>
+      <div class="features">
+        <article class="card wide">
+          <div class="icon">⚡</div>
+          <h3>Ultra-high-speed SSD</h3>
+          <p>Jump into games in seconds. The custom SSD removes long loading screens, so worlds open up faster and stay seamless.</p>
+        </article>
+        <article class="card">
+          <div class="icon">🎮</div>
+          <h3>DualSense controller</h3>
+          <p>Haptic feedback and adaptive triggers let you feel every surface, tension and impact.</p>
+        </article>
+        <article class="card">
+          <div class="icon">🖥️</div>
+          <h3>4K at up to 120 fps</h3>
+          <p>Sharp visuals and smooth motion on supported TVs, with ray tracing for realistic light.</p>
+        </article>
+        <article class="card wide">
+          <div class="icon">🎧</div>
+          <h3>Tempest 3D AudioTech</h3>
+          <p>Hear footsteps behind you and rain overhead. Put on a headset and sound surrounds you from every direction.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="editions">
+      <div class="section-head">
+        <h2>Pick your edition</h2>
+        <p>Same power, two ways to play.</p>
+      </div>
+      <div class="editions">
+        <div class="edition featured">
+          <h3>PS5 with disc drive</h3>
+          <ul>
+            <li>Play physical and digital games</li>
+            <li>Buy, trade and lend discs</li>
+            <li>Ultra HD Blu-ray support</li>
+          </ul>
+          <a class="btn primary" href="#">Add to cart</a>
+        </div>
+        <div class="edition">
+          <h3>PS5 Digital Edition</h3>
+          <ul>
+            <li>Download games from PlayStation Store</li>
+            <li>Slimmer, no disc drive</li>
+            <li>Disc drive can be added later on some models</li>
+          </ul>
+          <a class="btn ghost" href="#">Add to cart</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="specs">
+      <div class="section-head">
+        <h2>Tech specs</h2>
+      </div>
+      <dl class="specs">
+        <dt>Processor</dt><dd>AMD Zen 2, 8 cores</dd>
+        <dt>Graphics</dt><dd>AMD RDNA 2, ray tracing, up to 10.28 TFLOPS</dd>
+        <dt>Memory</dt><dd>16 GB GDDR6</dd>
+        <dt>Storage speed</dt><dd>Custom SSD, 5.5 GB/s raw</dd>
+        <dt>Video output</dt><dd>4K up to 120 Hz, 8K support</dd>
+        <dt>Audio</dt><dd>Tempest 3D AudioTech</dd>
+      </dl>
+    </section>
+
+    <section>
+      <div class="cta">
+        <h2>Ready to play?</h2>
+        <p>Pick up your PS5 today and start your next adventure.</p>
+        <a class="btn" href="#editions">Shop PS5</a>
+      </div>
+    </section>
+
+    <footer>
+      <span>© 2026 PS5 Landing Page – student project</span>
+      <span>Built with HTML5, CSS3 Flexbox and Grid</span>
+    </footer>
+
+  </div>
+</div>
+
+</body>
+</html>
